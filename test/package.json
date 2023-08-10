@@ -1,0 +1,20 @@
+{
+  "name": "Instruments DB E2E",
+  "version": "1.0.0",
+  "description": "Collection of test scripts for Instruments DB API",
+  "author": "Konstantin Talanov",
+  "dependencies": {
+    "@faker-js/faker": "^8.0.2",
+    "ajv": "^8.12.0",
+    "ajv-errors": "^3.0.0",
+    "axios": "^1.4.0",
+    "diacritics": "^1.3.0",
+    "dotenv": "^16.1.4",
+    "mongodb": "^5.6.0",
+    "pict-pairwise-testing": "^1.1.0",
+    "tape": "^5.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Instruments DB",
+  "version": "1.0.0",
+  "description": "Basic Express.js + MongoDB API with search and pagination functionality.",
+  "main": "index.mjs",
+  "author": "Konstantin Talanov",
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "ajv-errors": "^3.0.0",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "mongodb": "^5.6.0",
+    "swagger-ui-express": "^4.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0"
+  }
+}

@@ -1,0 +1,1200 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Instruments DB",
+        "version": "1.0.0",
+        "description": "Basic Express.js + MongoDB API with search and pagination functionality.",
+        "contact": {
+            "name": "Konstantin Talanov",
+            "url": "https://github.com/talanovQA/instruments-db"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://instruments-db.xyz"
+        }
+    ],
+    "paths": {
+        "/api": {
+            "get": {
+                "summary": "Search for instruments",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search string containing alphanumeric characters, spaces and the symbols: ()/!?.,'&-",
+                        "schema": {
+                            "$ref": "#components/schemas/string"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "Number of results to return per page",
+                        "schema": {
+                            "type": "integer",
+                            "enum": [
+                                5,
+                                10,
+                                25
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Number of the page to retrieve (1-999)",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 999
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort the results by either _id or name",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "_id",
+                                "name"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "description": "Sort direction for the results",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/searchResults"
+                                },
+                                "example": {
+                                    "count": 50,
+                                    "page_size": 5,
+                                    "sort_by": "_id",
+                                    "sort_direction": "asc",
+                                    "next": "https://instruments-db.xyz/api?page_size=5&page=2",
+                                    "results": [
+                                        {
+                                            "_id": 1,
+                                            "name": "Piano",
+                                            "type": "Keyboard",
+                                            "invented": "Early 18th century",
+                                            "origin": "Italy",
+                                            "musicians": [
+                                                "Ludwig van Beethoven",
+                                                "Wolfgang Amadeus Mozart",
+                                                "Frédéric Chopin",
+                                                "Claude Debussy",
+                                                "Johann Sebastian Bach"
+                                            ],
+                                            "songs": [
+                                                "Für Elise",
+                                                "Piano Sonata No. 16 in C major",
+                                                "Nocturne in E-flat major",
+                                                "Clair de Lune",
+                                                "Prelude in C major"
+                                            ],
+                                            "brands": [
+                                                "Steinway & Sons",
+                                                "Yamaha",
+                                                "Bösendorfer",
+                                                "Kawai",
+                                                "Fazioli"
+                                            ],
+                                            "tags": [
+                                                "classical"
+                                            ]
+                                        },
+                                        {
+                                            "_id": 2,
+                                            "name": "Violin",
+                                            "type": "Bowed string",
+                                            "invented": "Early 16th century",
+                                            "origin": "Italy",
+                                            "musicians": [
+                                                "Niccolò Paganini",
+                                                "Johann Sebastian Bach",
+                                                "Ludwig van Beethoven",
+                                                "Wolfgang Amadeus Mozart",
+                                                "Antonio Vivaldi"
+                                            ],
+                                            "songs": [
+                                                "Violin Concerto No. 1 in D major",
+                                                "The Four Seasons",
+                                                "Violin Sonata No. 9 in A major",
+                                                "Zigeunerweisen",
+                                                "Carmen Fantasy"
+                                            ],
+                                            "brands": [
+                                                "Stradivarius",
+                                                "Guarneri",
+                                                "Amati",
+                                                "Stainer",
+                                                "Bergonzi"
+                                            ],
+                                            "tags": [
+                                                "classical",
+                                                "orchestral"
+                                            ]
+                                        },
+                                        {
+                                            "_id": 3,
+                                            "name": "Classical Guitar",
+                                            "type": "Plucked string",
+                                            "invented": "19th century",
+                                            "origin": "Spain",
+                                            "musicians": [
+                                                "Andrés Segovia",
+                                                "Francisco Tárrega",
+                                                "John Williams",
+                                                "Manuel Barrueco",
+                                                "David Russell"
+                                            ],
+                                            "songs": [
+                                                "Asturias (Leyenda)",
+                                                "Recuerdos de la Alhambra",
+                                                "Concierto de Aranjuez",
+                                                "Romance",
+                                                "Capricho Arabe"
+                                            ],
+                                            "brands": [
+                                                "Antonio Torres",
+                                                "Hermann Hauser",
+                                                "José Ramírez",
+                                                "Ignacio Fleta",
+                                                "Manuel Rodriguez"
+                                            ],
+                                            "tags": [
+                                                "classical",
+                                                "acoustic",
+                                                "nylon-string"
+                                            ]
+                                        },
+                                        {
+                                            "_id": 4,
+                                            "name": "Pipe Organ",
+                                            "type": "Keyboard",
+                                            "invented": "3rd century BC",
+                                            "origin": "Greece",
+                                            "musicians": [
+                                                "Johann Sebastian Bach",
+                                                "Franz Liszt",
+                                                "Olivier Messiaen",
+                                                "Johannes Brahms",
+                                                "César Franck"
+                                            ],
+                                            "songs": [
+                                                "Toccata and Fugue in D minor",
+                                                "Passacaglia in C minor",
+                                                "La Nativité du Seigneur",
+                                                "Chorale Preludes",
+                                                "Prelude and Fugue in G minor"
+                                            ],
+                                            "brands": [
+                                                "Cavaillé-Coll",
+                                                "Schantz",
+                                                "Skinner",
+                                                "Harrison & Harrison",
+                                                "Mander"
+                                            ],
+                                            "tags": [
+                                                "church music"
+                                            ]
+                                        },
+                                        {
+                                            "_id": 5,
+                                            "name": "Cello",
+                                            "type": "Bowed string",
+                                            "invented": "16th century",
+                                            "origin": "Italy",
+                                            "musicians": [
+                                                "Yo-Yo Ma",
+                                                "Jacqueline du Pré",
+                                                "Mstislav Rostropovich",
+                                                "Pablo Casals",
+                                                "Mischa Maisky"
+                                            ],
+                                            "songs": [
+                                                "Cello Suite No. 1 in G major",
+                                                "Elgar Cello Concerto",
+                                                "Bach Cello Suites",
+                                                "Schumann Cello Concerto",
+                                                "Dvořák Cello Concerto"
+                                            ],
+                                            "brands": [
+                                                "Stradivarius",
+                                                "Montagnana",
+                                                "Guarneri",
+                                                "Amati",
+                                                "Maggini"
+                                            ],
+                                            "tags": [
+                                                "classical",
+                                                "orchestral"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Instrument or page is not found",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                },
+                                "example": {
+                                    "error": "No instruments were found"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid query parameters",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                },
+                                "example": [
+                                    {
+                                        "parameter": "search",
+                                        "error": "should have only alphanumeric characters, spaces, and the symbols: ()!?.,'&-"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api"
+                ]
+            },
+            "post": {
+                "summary": "Add a new instrument to the database",
+                "security": [
+                    {
+                        "customAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#components/requestBodies/body"
+                },
+                "responses": {
+                    "201": {
+                        "description": "Confirms a successful POST request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/post"
+                                },
+                                "example": {
+                                    "_id": 19,
+                                    "name": "Bass Guitar",
+                                    "message": "The instrument was added to the database"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                },
+                                "example": [
+                                    {
+                                        "property": "type",
+                                        "error": "should be equal to one of the allowed values"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorized"
+                                },
+                                "example": {
+                                    "error": "Unauthorized request: A valid API key is required"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "The instrument already exists",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/conflict"
+                                },
+                                "example": {
+                                    "name": "Saxophone",
+                                    "error": "The instrument already exists"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api"
+                ]
+            },
+            "head": {
+                "summary": "Retrieve resource status and metadata",
+                "responses": {
+                    "200": {
+                        "description": "Headers containing resource metadata",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        }
+                    }
+                },
+                "tags": [
+                    "/api"
+                ]
+            },
+            "options": {
+                "summary": "Get a list of allowed HTTP methods",
+                "responses": {
+                    "200": {
+                        "description": "Headers containing allowed HTTP methods",
+                        "headers": {
+                            "Allow": {
+                                "description": "List of allowed HTTP methods",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Connection": {
+                                "description": "Type of connection established for the request",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "description": "Time for the connection to remain open",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Content-Length": {
+                                "description": "Size of the response body in bytes (0)",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Date": {
+                                "description": "Date and time when the response was generated",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api"
+                ]
+            }
+        },
+        "/api/{_id}": {
+            "get": {
+                "summary": "Get a single instrument by _id",
+                "parameters": [
+                    {
+                        "$ref": "#components/parameters/path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The instrument with the specified _id",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/instrument"
+                                },
+                                "example": {
+                                    "_id": 2,
+                                    "name": "Violin",
+                                    "type": "Bowed string",
+                                    "invented": "Early 16th century",
+                                    "origin": "Italy",
+                                    "musicians": [
+                                        "Niccolò Paganini",
+                                        "Johann Sebastian Bach",
+                                        "Ludwig van Beethoven",
+                                        "Wolfgang Amadeus Mozart",
+                                        "Antonio Vivaldi"
+                                    ],
+                                    "songs": [
+                                        "Violin Concerto No. 1 in D major",
+                                        "The Four Seasons",
+                                        "Violin Sonata No. 9 in A major",
+                                        "Zigeunerweisen",
+                                        "Carmen Fantasy"
+                                    ],
+                                    "brands": [
+                                        "Stradivarius",
+                                        "Guarneri",
+                                        "Amati",
+                                        "Stainer",
+                                        "Bergonzi"
+                                    ],
+                                    "tags": [
+                                        "classical",
+                                        "orchestral"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid path parameters",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                },
+                                "example": [
+                                    {
+                                        "parameter": "_id",
+                                        "error": "should be a number 1-9999"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No instrument with the specified _id",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                },
+                                "example": {
+                                    "_id": 117,
+                                    "error": "No instrument with the specified _id"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api/{_id}"
+                ]
+            },
+            "put": {
+                "summary": "Update an instrument",
+                "security": [
+                    {
+                        "customAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#components/parameters/path"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#components/requestBodies/body"
+                },
+                "responses": {
+                    "200": {
+                        "description": "Confirms a successful PUT request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/put"
+                                },
+                                "example": {
+                                    "_id": 19,
+                                    "message": "The instrument was updated"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid path parameters or request body",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                },
+                                "example": [
+                                    {
+                                        "property": "songs",
+                                        "error": "should not have fewer than 1 item"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorized"
+                                },
+                                "example": {
+                                    "error": "Unauthorized request: A valid API key is required"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No instrument with the specified _id",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                },
+                                "example": {
+                                    "_id": 117,
+                                    "error": "No instrument with the specified _id"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "The instrument with the specified name already exists",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/conflict"
+                                },
+                                "example": {
+                                    "name": "Saxophone",
+                                    "error": "The instrument already exists"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api/{_id}"
+                ]
+            },
+            "delete": {
+                "summary": "Delete an instument",
+                "security": [
+                    {
+                        "customAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#components/parameters/path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Confirms a successful DELETE request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/delete"
+                                },
+                                "example": {
+                                    "_id": 19,
+                                    "message": "The instrument was deleted"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid path parameters",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/badRequest"
+                                },
+                                "example": [
+                                    {
+                                        "parameter": "_id",
+                                        "error": "should be a number 1-9999"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized request",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/unauthorized"
+                                },
+                                "example": {
+                                    "error": "Unauthorized request: A valid API key is required"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "summary": "No instrument with the specified _id",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/notFound"
+                                },
+                                "example": {
+                                    "_id": 117,
+                                    "error": "No instrument with the specified _id"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api/{_id}"
+                ]
+            },
+            "head": {
+                "summary": "Retrieve resource status and metadata",
+                "parameters": [
+                    {
+                        "$ref": "#components/parameters/path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Headers containing resource metadata",
+                        "headers": {
+                            "$ref": "#components/headers"
+                        }
+                    }
+                },
+                "tags": [
+                    "/api/{_id}"
+                ]
+            },
+            "options": {
+                "summary": "Get a list of allowed HTTP methods",
+                "parameters": [
+                    {
+                        "$ref": "#components/parameters/path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Headers containing allowed HTTP methods",
+                        "headers": {
+                            "Allow": {
+                                "description": "List of allowed HTTP methods",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Connection": {
+                                "description": "Type of connection established for the request",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Keep-Alive": {
+                                "description": "Time for the connection to remain open",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Content-Length": {
+                                "description": "Size of the response body in bytes (0)",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Date": {
+                                "description": "Date and time when the response was generated",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "/api/{_id}"
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "customAuth": {
+                "type": "apiKey",
+                "name": "API-Key",
+                "in": "header"
+            }
+        },
+        "headers": {
+            "Connection": {
+                "description": "Type of connection established for the request",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Keep-Alive": {
+                "description": "Time for the connection to remain open",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Cache-Control": {
+                "description": "Caching scheme",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Content-Type": {
+                "description": "Media type of the response body",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Content-Length": {
+                "description": "Size of the response body in bytes",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Strict-Transport-Security": {
+                "description": "Enforces HTTPS connection in web browsers",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "Date": {
+                "description": "Date and time when the response was generated",
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
+        "parameters": {
+            "path": {
+                "description": "Unique instrument's id. Should be a number 1-9999",
+                "name": "_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "pattern": "^[1-9][0-9]{0,3}$"
+                }
+            }
+        },
+        "requestBodies": {
+            "body": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "$ref": "#components/schemas/string"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Bowed string",
+                                        "Plucked string",
+                                        "Woodwind",
+                                        "Brass",
+                                        "Percussion",
+                                        "Keyboard",
+                                        "Other"
+                                    ]
+                                },
+                                "invented": {
+                                    "$ref": "#components/schemas/string"
+                                },
+                                "origin": {
+                                    "$ref": "#components/schemas/string"
+                                },
+                                "musicians": {
+                                    "$ref": "#components/schemas/array"
+                                },
+                                "songs": {
+                                    "$ref": "#components/schemas/array"
+                                },
+                                "brands": {
+                                    "$ref": "#components/schemas/array"
+                                },
+                                "tags": {
+                                    "$ref": "#components/schemas/array"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "name",
+                                "type",
+                                "invented",
+                                "origin",
+                                "musicians",
+                                "songs",
+                                "brands",
+                                "tags"
+                            ]
+                        },
+                        "example": {
+                            "name": "Bass Guitar",
+                            "type": "Plucked string",
+                            "invented": "1930s",
+                            "origin": "United States",
+                            "musicians": [
+                                "Paul McCartney",
+                                "Flea",
+                                "Geddy Lee",
+                                "John Entwistle"
+                            ],
+                            "songs": [
+                                "Another One Bites the Dust",
+                                "Under Pressure",
+                                "Hysteria",
+                                "Roundabout"
+                            ],
+                            "brands": [
+                                "Fender",
+                                "Music Man",
+                                "Gibson",
+                                "Ibanez"
+                            ],
+                            "tags": [
+                                "rock",
+                                "bass",
+                                "electric"
+                            ]
+                        }
+                    }
+                },
+                "required": true
+            }
+        },
+        "schemas": {
+            "_id": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9999
+            },
+            "string": {
+                "type": "string",
+                "pattern": "^(?:[A-Za-z0-9\\u00C0-\\u017E()/!?.,'&-]+\\s?)+(?<!\\s)$",
+                "maxLength": 100
+            },
+            "array": {
+                "type": "array",
+                "items": {
+                    "$ref": "#components/schemas/string"
+                },
+                "minItems": 1,
+                "maxItems": 5,
+                "uniqueItems": true
+            },
+            "instrument": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#components/schemas/_id"
+                    },
+                    "name": {
+                        "$ref": "#components/schemas/string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "Bowed string",
+                            "Plucked string",
+                            "Woodwind",
+                            "Brass",
+                            "Percussion",
+                            "Keyboard",
+                            "Other"
+                        ]
+                    },
+                    "invented": {
+                        "$ref": "#components/schemas/string"
+                    },
+                    "origin": {
+                        "$ref": "#components/schemas/string"
+                    },
+                    "musicians": {
+                        "$ref": "#components/schemas/array"
+                    },
+                    "songs": {
+                        "$ref": "#components/schemas/array"
+                    },
+                    "brands": {
+                        "$ref": "#components/schemas/array"
+                    },
+                    "tags": {
+                        "$ref": "#components/schemas/array"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "_id",
+                    "name",
+                    "type",
+                    "invented",
+                    "origin",
+                    "musicians",
+                    "songs",
+                    "brands",
+                    "tags"
+                ]
+            },
+            "searchResults": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 999
+                    },
+                    "page_size": {
+                        "type": "integer",
+                        "enum": [
+                            5,
+                            10,
+                            25
+                        ]
+                    },
+                    "sort_by": {
+                        "type": "string",
+                        "enum": [
+                            "_id",
+                            "name"
+                        ]
+                    },
+                    "sort_direction": {
+                        "type": "string",
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ]
+                    },
+                    "next": {
+                        "type": "string",
+                        "pattern": "^https://instruments-db\\.xyz/api(?:\\?\\S+=\\S+)+$"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "pattern": "^https://instruments-db\\.xyz/api(?:\\?\\S+=\\S+)+$"
+                    },
+                    "results": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "$ref": "#/components/schemas/instrument"
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "count",
+                    "page_size",
+                    "sort_by",
+                    "sort_direction",
+                    "results"
+                ]
+            },
+            "post": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#components/schemas/_id"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "_id",
+                    "name",
+                    "message"
+                ]
+            },
+            "put": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#components/schemas/_id"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "_id",
+                    "message"
+                ]
+            },
+            "delete": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#components/schemas/_id"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "_id",
+                    "message"
+                ]
+            },
+            "badRequest": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "parameter": {
+                            "type": "string"
+                        },
+                        "property": {
+                            "type": "string"
+                        },
+                        "error": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "error"
+                    ]
+                }
+            },
+            "unauthorized": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "error"
+                ]
+            },
+            "notFound": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "$ref": "#components/schemas/_id"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "error"
+                ]
+            },
+            "conflict": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "error": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false,
+                "required": [
+                    "name",
+                    "error"
+                ]
+            }
+        }
+    }
+}
