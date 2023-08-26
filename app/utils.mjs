@@ -92,9 +92,10 @@ export function navigation(query, page, numOfPages) {
 	}
 }
 
-export function setHeaders(req, res, next) {
+export function commonHeaders(req, res, next) {
 	res.set(
 		{
+			"Access-Control-Allow-Origin": "*",
 			"Strict-Transport-Security": "max-age=15768000",
 			"Cache-Control": "no-store"
 		}
@@ -102,7 +103,21 @@ export function setHeaders(req, res, next) {
 	next()
 }
 
-export function redirectToHTTPS (req, res, next) {
+export function corsHeaders(req, res) {
+		const methods = req.url === "/api"
+			? "GET, HEAD, POST, OPTIONS"
+			: "GET, HEAD, PUT, DELETE, OPTIONS"
+		res.set(
+			{
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Headers": "API-Key, Content-Type",
+				"Access-Control-Allow-Methods": methods,
+			}
+		)
+		res.status(200).end()
+}
+
+export function redirectToHTTPS(req, res, next) {
 	if (req.secure) {
 		next()
 	} else {
@@ -110,12 +125,3 @@ export function redirectToHTTPS (req, res, next) {
 	}
 }
 
-export function allowMethods(httpMethods) {
-	return (req, res) => {
-		for (const header in res.getHeaders()) {
-			res.removeHeader(header)
-		}
-		res.set("Allow", httpMethods.join(", "))
-		res.status(200).end()
-	}
-}

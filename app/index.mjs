@@ -9,9 +9,9 @@ import {
 	authenticate,
 	parseQuery,
 	navigation,
-	setHeaders,
-	redirectToHTTPS,
-	allowMethods
+	commonHeaders,
+	corsHeaders,
+	redirectToHTTPS
 } from "./utils.mjs"
 
 const app = express()
@@ -33,7 +33,108 @@ app.all("/", (req, res) => {
 	res.redirect("/docs")
 })
 
-app.use("*", express.json(), setHeaders)
+app.options("/api/:_id", corsHeaders)
+
+app.use("/api/:_id", express.json(), commonHeaders)
+
+app.get("/api/:_id", validate("params"), async (req, res) => {
+	const _id = parseInt(req.params._id)
+	try {
+		const instrument = await db.collection("instruments").findOne({ _id })
+		if (!instrument) {
+			throw {
+				status: 404,
+				message: "No instrument with the specified _id"
+			}
+		}
+		res.status(200).json(instrument)
+	} catch ({ status, message }) {
+		res.status(status || 500).json(
+			{
+				_id,
+				error: message
+			}
+		)
+	}
+})
+
+app.put("/api/:_id", validate("params", "body"), authenticate, async (req, res) => {
+	const _id = parseInt(req.params._id)
+	const { name } = req.body
+	try {
+		const { value } = await db.collection("instruments").findOneAndReplace(
+			{ _id },
+			req.body
+		)
+		if (!value) {
+			throw {
+				status: 404,
+				message: "No instrument with the specified _id"
+			}
+		}
+		res.status(200).json(
+			{
+				_id,
+				message: "The instrument was updated"
+			}
+		)
+	} catch ({ status, code, message }) {
+		if (code === 11000) {
+			res.status(409).json(
+				{
+					name,
+					error: "An instrument with the specified name already exists"
+				}
+			)
+		} else {
+			res.status(status || 500).json(
+				{
+					_id,
+					error: message
+				}
+			)
+		}
+	}
+})
+
+app.delete("/api/:_id", validate("params"), authenticate, async (req, res) => {
+	const _id = parseInt(req.params._id)
+	try {
+		const { value } = await db.collection("instruments").findOneAndDelete({ _id })
+		if (!value) {
+			throw {
+				status: 404,
+				message: "No instrument with the specified _id"
+			}
+		}
+		res.status(200).json(
+			{
+				_id,
+				message: "The instrument was deleted"
+			}
+		)
+	} catch ({ status, message }) {
+		res.status(status || 500).json(
+			{
+				_id,
+				error: message
+			}
+		)
+	}
+})
+
+app.all("/api/:_id", (req, res) => {
+	res.status(405).json(
+		{
+			method: req.method,
+			error: "Method not allowed"
+		}
+	)
+})
+
+app.options("/api", corsHeaders)
+
+app.use("/api", express.json(), commonHeaders)
 
 app.get("/api", validate("query"), async (req, res) => {
 	try {
@@ -151,15 +252,6 @@ app.post("/api", validate("body"), authenticate, async (req, res) => {
 	}
 })
 
-app.options("/api", allowMethods(
-	[
-		"GET",
-		"HEAD",
-		"POST",
-		"OPTIONS"
-	]
-))
-
 app.all("/api", (req, res) => {
 	res.status(405).json(
 		{
@@ -169,110 +261,7 @@ app.all("/api", (req, res) => {
 	)
 })
 
-app.get("/api/:_id", validate("params"), async (req, res) => {
-	const _id = parseInt(req.params._id)
-	try {
-		const instrument = await db.collection("instruments").findOne({ _id })
-		if (!instrument) {
-			throw {
-				status: 404,
-				message: "No instrument with the specified _id"
-			}
-		}
-		res.status(200).json(instrument)
-	} catch ({ status, message }) {
-		res.status(status || 500).json(
-			{
-				_id,
-				error: message
-			}
-		)
-	}
-})
-
-app.put("/api/:_id", validate("params", "body"), authenticate, async (req, res) => {
-	const _id = parseInt(req.params._id)
-	const { name } = req.body
-	try {
-		const { value } = await db.collection("instruments").findOneAndReplace(
-			{ _id },
-			req.body
-		)
-		if (!value) {
-			throw {
-				status: 404,
-				message: "No instrument with the specified _id"
-			}
-		}
-		res.status(200).json(
-			{
-				_id,
-				message: "The instrument was updated"
-			}
-		)
-	} catch ({ status, code, message }) {
-		if (code === 11000) {
-			res.status(409).json(
-				{
-					name,
-					error: "An instrument with the specified name already exists"
-				}
-			)
-		} else {
-			res.status(status || 500).json(
-				{
-					_id,
-					error: message
-				}
-			)
-		}
-	}
-})
-
-app.delete("/api/:_id", validate("params"), authenticate, async (req, res) => {
-	const _id = parseInt(req.params._id)
-	try {
-		const { value } = await db.collection("instruments").findOneAndDelete({ _id })
-		if (!value) {
-			throw {
-				status: 404,
-				message: "No instrument with the specified _id"
-			}
-		}
-		res.status(200).json(
-			{
-				_id,
-				message: "The instrument was deleted"
-			}
-		)
-	} catch ({ status, message }) {
-		res.status(status || 500).json(
-			{
-				_id,
-				error: message
-			}
-		)
-	}
-})
-
-app.options("/api/:_id", allowMethods(
-	[
-		"GET",
-		"HEAD",
-		"PUT",
-		"DELETE",
-		"OPTIONS"
-	]
-))
-
-app.all("/api/:_id", (req, res) => {
-	res.status(405).json(
-		{
-			method: req.method,
-			error: "Method not allowed"
-		}
-	)
-})
+app.use("*", commonHeaders)
 
 app.all("*", (req, res) => {
 	res.status(404).json(

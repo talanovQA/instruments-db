@@ -281,12 +281,13 @@ async function errorHandling() {
                 "Status: 200 OK"
             )
             t.is(
-                validate(response.headers, "optionsHeaders"),
+                validate(response.headers, "corsHeaders"),
                 true,
                 "Expected headers"
             )
+            const allowed = response.headers["access-control-allow-methods"]
             const notAllowed = allMethods.filter(
-                method => !response.headers.allow.includes(method)
+                method => !allowed.includes(method)
             )
             for (const method of notAllowed) {
                 request = {

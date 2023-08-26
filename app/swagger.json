@@ -398,13 +398,25 @@
                 ]
             },
             "options": {
-                "summary": "Get a list of allowed HTTP methods",
+                "summary": "Get info about the server's CORS policy",
                 "responses": {
                     "200": {
-                        "description": "Headers containing allowed HTTP methods",
+                        "description": "Headers containing CORS rules",
                         "headers": {
-                            "Allow": {
-                                "description": "List of allowed HTTP methods",
+                            "Access-Control-Allow-Origin": {
+                                "description": "Allowed CORS domains",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Headers": {
+                                "description": " Allowed HTTP headers for CORS requests",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Methods": {
+                                "description": "Allowed HTTP methods for CORS requests",
                                 "schema": {
                                     "type": "string"
                                 }
@@ -750,7 +762,7 @@
                 ]
             },
             "options": {
-                "summary": "Get a list of allowed HTTP methods",
+                "summary": "Get info about the server's CORS policy",
                 "parameters": [
                     {
                         "$ref": "#components/parameters/path"
@@ -758,10 +770,22 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Headers containing allowed HTTP methods",
+                        "description": "Headers containing CORS rules",
                         "headers": {
-                            "Allow": {
-                                "description": "List of allowed HTTP methods",
+                            "Access-Control-Allow-Origin": {
+                                "description": "Allowed CORS domains",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Headers": {
+                                "description": " Allowed HTTP headers for CORS requests",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Access-Control-Allow-Methods": {
+                                "description": "Allowed HTTP methods for CORS requests",
                                 "schema": {
                                     "type": "string"
                                 }
@@ -808,6 +832,12 @@
             }
         },
         "headers": {
+            "Access-Control-Allow-Origin": {
+                "description": "Allowed cross-origin resource sharing domains",
+                "schema": {
+                    "type": "string"
+                }
+            },
             "Connection": {
                 "description": "Type of connection established for the request",
                 "schema": {

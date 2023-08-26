@@ -23,6 +23,9 @@ export const responses = {
         "headers": {
             "type": "object",
             "properties": {
+                "access-control-allow-origin": {
+                    "const": "*"
+                },
                 "connection": {
                     "enum": [
                         "close",
@@ -50,6 +53,7 @@ export const responses = {
                 }
             },
             "required": [
+                "access-control-allow-origin",
                 "connection",
                 "cache-control",
                 "content-type",
@@ -59,11 +63,20 @@ export const responses = {
             ],
             "additionalProperties": false
         },
-        "optionsHeaders": {
+        "corsHeaders": {
             "type": "object",
             "properties": {
-                "allow": {
-                    "type": "string"
+                "access-control-allow-origin": {
+                    "const": "*"
+                },
+                "access-control-allow-headers": {
+                    "const": "API-Key, Content-Type"
+                },
+                "access-control-allow-methods": {
+                    "enum": [
+                        "GET, HEAD, POST, OPTIONS",
+                        "GET, HEAD, PUT, DELETE, OPTIONS"
+                    ]
                 },
                 "connection": {
                     "enum": [
@@ -83,7 +96,9 @@ export const responses = {
             },
             "additionalProperties": false,
             "required": [
-                "allow",
+                "access-control-allow-origin",
+                "access-control-allow-headers",
+                "access-control-allow-methods",
                 "connection",
                 "date",
                 "content-length"
